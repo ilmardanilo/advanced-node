@@ -4,7 +4,7 @@
   "description": "API em NodeJs usando Typescript, TDD, Clean Architecture, Design Patterns e SOLID principles",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "rm -rf dist && tsc"
   },
   "repository": {
     "type": "git",
@@ -16,5 +16,17 @@
   "bugs": {
     "url": "https://github.com/ilmardanilo/advanced-node/issues"
   },
-  "homepage": "https://github.com/ilmardanilo/advanced-node#readme"
+  "homepage": "https://github.com/ilmardanilo/advanced-node#readme",
+  "devDependencies": {
+    "@types/module-alias": "^2.0.1",
+    "@types/node": "^18.11.18",
+    "@types/typescript": "^2.0.0",
+    "typescript": "^4.9.4"
+  },
+  "engines": {
+    "node": "14.x"
+  },
+  "dependencies": {
+    "module-alias": "^2.2.2"
+  }
 }

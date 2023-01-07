@@ -4,6 +4,7 @@ import { LoadFacebookUserApi } from '../../../src/data/contracts/api';
 import {
   LoadUserAccountRepository,
   CreateFacebookAccountRepository,
+  UpdateFacebookAccountRepository,
 } from '../../../src/data/contracts/repository';
 import { mock, MockProxy } from 'jest-mock-extended';
 
@@ -11,7 +12,9 @@ describe('FacebookAuthenticationService', () => {
   let sut: FacebookAuthenticationService;
   let facebookApi: MockProxy<LoadFacebookUserApi>;
   let userAccountRepository: MockProxy<
-    LoadUserAccountRepository & CreateFacebookAccountRepository
+    LoadUserAccountRepository &
+      CreateFacebookAccountRepository &
+      UpdateFacebookAccountRepository
   >;
   const token = 'any_token';
 
@@ -23,6 +26,10 @@ describe('FacebookAuthenticationService', () => {
       facebookId: 'any_fb_id',
     });
     userAccountRepository = mock();
+    userAccountRepository.load.mockResolvedValue({
+      id: 'any_id',
+      name: 'any_name',
+    });
     sut = new FacebookAuthenticationService(facebookApi, userAccountRepository);
   });
 
@@ -51,8 +58,8 @@ describe('FacebookAuthenticationService', () => {
   });
 
   it('Should call CreateFacebookAccountRepository when LoadUserAccountRepository returns undefined', async () => {
-    await sut.perform({ token });
     userAccountRepository.load.mockResolvedValueOnce(undefined);
+    await sut.perform({ token });
 
     expect(userAccountRepository.createFromFacebook).toHaveBeenCalledWith({
       name: 'any_fb_name',
@@ -60,5 +67,16 @@ describe('FacebookAuthenticationService', () => {
       facebookId: 'any_fb_id',
     });
     expect(userAccountRepository.createFromFacebook).toHaveBeenCalledTimes(1);
+  });
+
+  it('Should call UpdateFacebookAccountRepository when LoadUserAccountRepository returns data', async () => {
+    await sut.perform({ token });
+
+    expect(userAccountRepository.updateWithFacebook).toHaveBeenCalledWith({
+      id: 'any_id',
+      name: 'any_name',
+      facebookId: 'any_fb_id',
+    });
+    expect(userAccountRepository.updateWithFacebook).toHaveBeenCalledTimes(1);
   });
 });

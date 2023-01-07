@@ -1,5 +1,6 @@
 import { AuthenticationError } from '../../domain/errors';
 import { FacebookAuthentication } from '../../domain/features';
+import { FacebookAccount } from '../../domain/models';
 import { LoadFacebookUserApi } from '../contracts/api';
 import {
   LoadUserAccountRepository,
@@ -19,13 +20,8 @@ export class FacebookAuthenticationService {
 
     if (fbData) {
       const accountData = await this.userAccount.load({ email: fbData.email });
-
-      await this.userAccount.saveWithFacebook({
-        id: accountData?.id,
-        name: accountData?.name ?? fbData.name,
-        email: fbData.email,
-        facebookId: fbData.facebookId,
-      });
+      const fbAccount = new FacebookAccount(fbData, accountData);
+      await this.userAccount.saveWithFacebook(fbAccount);
     }
 
     return new AuthenticationError();

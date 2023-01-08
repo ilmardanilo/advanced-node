@@ -13,15 +13,16 @@ import { mock, MockProxy } from 'jest-mock-extended';
 jest.mock('../../../src/domain/models/facebook-account');
 
 describe('FacebookAuthenticationService', () => {
-  let sut: FacebookAuthenticationService;
   let facebookApi: MockProxy<LoadFacebookUserApi>;
   let crypto: MockProxy<TokenGenerator>;
   let userAccountRepository: MockProxy<
     LoadUserAccountRepository & SaveFacebookAccountRepository
   >;
-  const token = 'any_token';
+  let sut: FacebookAuthenticationService;
+  let token: string;
 
-  beforeEach(() => {
+  beforeAll(() => {
+    token = 'any_token';
     facebookApi = mock();
     facebookApi.loadUser.mockResolvedValue({
       name: 'any_fb_name',
@@ -35,6 +36,9 @@ describe('FacebookAuthenticationService', () => {
     });
     crypto = mock();
     crypto.generateToken.mockResolvedValue('any_generated_token');
+  });
+
+  beforeEach(() => {
     sut = new FacebookAuthenticationService(
       facebookApi,
       userAccountRepository,

@@ -6,7 +6,7 @@ import {
   LoadUserAccountRepository,
   SaveFacebookAccountRepository,
 } from '../../../src/data/contracts/repository';
-import { FacebookAccount } from '../../../src/domain/models';
+import { AccessToken, FacebookAccount } from '../../../src/domain/models';
 import { mocked } from 'ts-jest/utils';
 import { mock, MockProxy } from 'jest-mock-extended';
 
@@ -85,6 +85,7 @@ describe('FacebookAuthenticationService', () => {
 
     expect(crypto.generateToken).toHaveBeenCalledWith({
       key: 'any_account_id',
+      expirationInMs: AccessToken.expirationInMs,
     });
     expect(crypto.generateToken).toHaveBeenCalledTimes(1);
   });

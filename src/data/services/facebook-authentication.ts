@@ -1,6 +1,6 @@
 import { AuthenticationError } from '../../domain/errors';
 import { FacebookAuthentication } from '../../domain/features';
-import { FacebookAccount } from '../../domain/models';
+import { AccessToken, FacebookAccount } from '../../domain/models';
 import { LoadFacebookUserApi } from '../contracts/api';
 import { TokenGenerator } from '../contracts/crypto';
 import {
@@ -24,7 +24,10 @@ export class FacebookAuthenticationService {
       const accountData = await this.userAccount.load({ email: fbData.email });
       const fbAccount = new FacebookAccount(fbData, accountData);
       const { id } = await this.userAccount.saveWithFacebook(fbAccount);
-      await this.crypto.generateToken({ key: id });
+      await this.crypto.generateToken({
+        key: id,
+        expirationInMs: AccessToken.expirationInMs,
+      });
     }
 
     return new AuthenticationError();

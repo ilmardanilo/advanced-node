@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/ilmardanilo/advanced-node#readme",
   "devDependencies": {
+    "@types/axios": "^0.14.0",
     "@types/jest": "^27.0.1",
     "@types/node": "^18.11.18",
     "@types/typescript": "^2.0.0",
@@ -35,5 +36,8 @@
   },
   "engines": {
     "node": "14.x"
+  },
+  "dependencies": {
+    "axios": "^0.21.4"
   }
 }

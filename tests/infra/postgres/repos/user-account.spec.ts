@@ -1,17 +1,7 @@
 import { PgUser } from '../../../../src/infra/postgres/entities';
 import { PgUserAccountRepository } from '../../../../src/infra/postgres/repos';
-import { IMemoryDb, newDb } from 'pg-mem';
 import { getRepository, Repository, getConnection } from 'typeorm';
-
-const makeFakeDb = async (entities?: any[]): Promise<IMemoryDb> => {
-  const db = newDb();
-  const connection = await db.adapters.createTypeormConnection({
-    type: 'postgres',
-    entities: entities ?? ['src/infra/postgres/entities/index.ts'],
-  });
-  await connection.synchronize();
-  return db;
-};
+import { makeFakeDb } from '../mocks';
 
 describe('PgUserAccountRepository', () => {
   describe('load', () => {

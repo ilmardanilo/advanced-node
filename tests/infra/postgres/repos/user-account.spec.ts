@@ -2,13 +2,16 @@ import { PgUser } from '../../../../src/infra/postgres/entities';
 import { PgUserAccountRepository } from '../../../../src/infra/postgres/repos';
 import { getRepository, Repository, getConnection } from 'typeorm';
 import { makeFakeDb } from '../mocks';
+import { IBackup } from 'pg-mem';
 
 describe('PgUserAccountRepository', () => {
   let sut: PgUserAccountRepository;
   let pgUserRepo: Repository<PgUser>;
+  let backup: IBackup;
 
   beforeAll(async () => {
-    await makeFakeDb([PgUser]);
+    const db = await makeFakeDb([PgUser]);
+    backup = db.backup();
     pgUserRepo = getRepository(PgUser);
   });
 
@@ -18,7 +21,7 @@ describe('PgUserAccountRepository', () => {
 
   beforeEach(() => {
     sut = new PgUserAccountRepository();
-    pgUserRepo.delete({});
+    backup.restore();
   });
 
   describe('load', () => {
@@ -34,6 +37,19 @@ describe('PgUserAccountRepository', () => {
       const account = await sut.load({ email: 'any_email' });
 
       expect(account).toBeUndefined();
+    });
+  });
+
+  describe('saveWithFacebook', () => {
+    it('should create an account if id is undefined', async () => {
+      await sut.saveWithFacebook({
+        email: 'any_email',
+        name: 'any_name',
+        facebookId: 'any_fb_id',
+      });
+      const pgUser = await pgUserRepo.findOne({ email: 'any_email' });
+
+      expect(pgUser?.id).toBe(1);
     });
   });
 });

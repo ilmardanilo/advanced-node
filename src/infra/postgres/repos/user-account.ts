@@ -5,12 +5,15 @@ import {
 } from '../../../data/contracts/repository';
 import { PgUser } from '../entities';
 
+type LoadParams = LoadUserAccountRepository.Params;
+type LoadResult = LoadUserAccountRepository.Result;
+type SaveParams = SaveFacebookAccountRepository.Params;
+
 export class PgUserAccountRepository implements LoadUserAccountRepository {
-  async load(
-    params: LoadUserAccountRepository.Params,
-  ): Promise<LoadUserAccountRepository.Result> {
-    const pgUserRepo = getRepository(PgUser);
-    const pgUser = await pgUserRepo.findOne({ email: params.email });
+  private readonly pgUserRepo = getRepository(PgUser);
+
+  async load(params: LoadParams): Promise<LoadResult> {
+    const pgUser = await this.pgUserRepo.findOne({ email: params.email });
 
     if (pgUser) {
       return {
@@ -20,20 +23,17 @@ export class PgUserAccountRepository implements LoadUserAccountRepository {
     }
   }
 
-  async saveWithFacebook(
-    params: SaveFacebookAccountRepository.Params,
-  ): Promise<void> {
+  async saveWithFacebook(params: SaveParams): Promise<void> {
     const { id, email, name, facebookId } = params;
-    const pgUserRepo = getRepository(PgUser);
 
     if (!id) {
-      await pgUserRepo.save({
+      await this.pgUserRepo.save({
         email,
         name,
         facebookId,
       });
     } else {
-      await pgUserRepo.update(
+      await this.pgUserRepo.update(
         {
           id: Number(id),
         },

@@ -1,56 +1,9 @@
+import { FacebookLoginController } from '../../../src/application/controllers';
 import { FacebookAuthentication } from '../../../src/domain/features';
-import { AuthenticationError } from '../../../src/domain/errors';
 import { AccessToken } from '../../../src/domain/models';
+import { AuthenticationError } from '../../../src/domain/errors';
+import { ServerError } from '../../../src/application/errors';
 import { mock, MockProxy } from 'jest-mock-extended';
-
-class FacebookLoginController {
-  constructor(
-    private readonly facebookAuthentication: FacebookAuthentication,
-  ) {}
-
-  async handle(httpRequest: any): Promise<HttpResponse> {
-    try {
-      if (!httpRequest.token) {
-        return {
-          statusCode: 400,
-          data: new Error('The field token is required'),
-        };
-      }
-
-      const result = await this.facebookAuthentication.perform({
-        token: httpRequest.token,
-      });
-      if (result instanceof AccessToken) {
-        return {
-          statusCode: 200,
-          data: {
-            accessToken: result.value,
-          },
-        };
-      } else {
-        return {
-          statusCode: 401,
-          data: result,
-        };
-      }
-    } catch (error: any) {
-      return {
-        statusCode: 500,
-        data: new ServerError(error),
-      };
-    }
-  }
-}
-
-type HttpResponse = { statusCode: number; data: any };
-
-class ServerError extends Error {
-  constructor(error?: Error) {
-    super('Server failed. Try again soon');
-    this.name = 'ServerError';
-    this.stack = error?.stack;
-  }
-}
 
 describe('FacebookLoginController', () => {
   let sut: FacebookLoginController;

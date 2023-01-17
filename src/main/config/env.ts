@@ -4,4 +4,5 @@ export const env = {
     clientSecret:
       process.env.FB_CLIENT_SECRET || 'a53ad2e315017ace553cd85dfe61fa39',
   },
+  port: process.env.PORT || 3333,
 };

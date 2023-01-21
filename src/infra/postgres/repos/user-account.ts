@@ -15,8 +15,8 @@ export class PgUserAccountRepository
 {
   private readonly pgUserRepo = getRepository(PgUser);
 
-  async load(params: LoadParams): Promise<LoadResult> {
-    const pgUser = await this.pgUserRepo.findOne({ email: params.email });
+  async load({ email }: LoadParams): Promise<LoadResult> {
+    const pgUser = await this.pgUserRepo.findOne({ email });
 
     if (pgUser) {
       return {
@@ -26,29 +26,22 @@ export class PgUserAccountRepository
     }
   }
 
-  async saveWithFacebook(params: SaveParams): Promise<SaveResult> {
-    let id: string;
+  async saveWithFacebook({
+    id,
+    email,
+    name,
+    facebookId,
+  }: SaveParams): Promise<SaveResult> {
+    let resultId: string;
 
-    if (!params.id) {
-      const pgUser = await this.pgUserRepo.save({
-        email: params.email,
-        name: params.name,
-        facebookId: params.facebookId,
-      });
-      id = pgUser.id.toString();
+    if (!id) {
+      const pgUser = await this.pgUserRepo.save({ email, name, facebookId });
+      resultId = pgUser.id.toString();
     } else {
-      id = params.id;
-      await this.pgUserRepo.update(
-        {
-          id: Number(params.id),
-        },
-        {
-          name: params.name,
-          facebookId: params.facebookId,
-        },
-      );
+      resultId = id;
+      await this.pgUserRepo.update({ id: Number(id) }, { name, facebookId });
     }
 
-    return { id };
+    return { id: resultId };
   }
 }

@@ -17,6 +17,9 @@ export type UserInfo = {
   email: string;
 };
 
+export type Params = LoadFacebookUserApi.Params;
+export type Result = LoadFacebookUserApi.Result;
+
 export class FacebookApi implements LoadFacebookUserApi {
   private readonly baseUrl = 'https://graph.facebook.com';
 
@@ -26,11 +29,9 @@ export class FacebookApi implements LoadFacebookUserApi {
     private readonly clientSecret: string,
   ) {}
 
-  async loadUser(
-    params: LoadFacebookUserApi.Params,
-  ): Promise<LoadFacebookUserApi.Result> {
+  async loadUser({ token }: Params): Promise<Result> {
     try {
-      const userInfo = await this.getUserInfo(params.token);
+      const userInfo = await this.getUserInfo(token);
       return {
         facebookId: userInfo.id,
         name: userInfo.name,
@@ -41,7 +42,7 @@ export class FacebookApi implements LoadFacebookUserApi {
     }
   }
 
-  private async geAppToken(): Promise<AppToken> {
+  private async getAppToken(): Promise<AppToken> {
     return this.httpClient.get({
       url: `${this.baseUrl}/oauth/access_token`,
       params: {
@@ -53,7 +54,7 @@ export class FacebookApi implements LoadFacebookUserApi {
   }
 
   private async getDebugToken(clientToken: string): Promise<DebugToken> {
-    const appToken = await this.geAppToken();
+    const appToken = await this.getAppToken();
 
     return this.httpClient.get({
       url: `${this.baseUrl}/debug_token`,

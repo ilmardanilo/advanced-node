@@ -1,7 +1,9 @@
 import { Router } from 'express';
+import { ExpressRouter } from '../../infra/http';
+import { makeFacebookLoginController } from '../factories/controllers';
 
 export const loginRouter = Router();
 
-loginRouter.post('/login/facebook', (req, res) => {
-  res.send({ data: 'any_data' });
-});
+const adapter = new ExpressRouter(makeFacebookLoginController());
+
+loginRouter.post('/login/facebook', adapter.adapt);

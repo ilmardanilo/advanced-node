@@ -1,11 +1,11 @@
-import { FacebookAuthenticationService } from '../../../src/data/services/';
+import { FacebookAuthenticationService } from '../../../src/domain/services';
 import { AuthenticationError } from '../../../src/domain/errors';
-import { LoadFacebookUserApi } from '../../../src/data/contracts/api';
-import { TokenGenerator } from '../../../src/data/contracts/crypto';
+import { LoadFacebookUserApi } from '../../../src/domain/contracts/api';
+import { TokenGenerator } from '../../../src/domain/contracts/crypto';
 import {
   LoadUserAccountRepository,
   SaveFacebookAccountRepository,
-} from '../../../src/data/contracts/repository';
+} from '../../../src/domain/contracts/repository';
 import { AccessToken, FacebookAccount } from '../../../src/domain/models';
 import { mocked } from 'ts-jest/utils';
 import { mock, MockProxy } from 'jest-mock-extended';

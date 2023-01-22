@@ -1,6 +1,5 @@
 import { FacebookLoginController } from '../../../src/application/controllers';
 import { FacebookAuthentication } from '../../../src/domain/features';
-import { AccessToken } from '../../../src/domain/entities';
 import { AuthenticationError } from '../../../src/domain/entities/errors';
 import { UnauthorizedError } from '../../../src/application/errors';
 import { RequiredStringValidator } from '../../../src/application/validation';
@@ -13,7 +12,7 @@ describe('FacebookLoginController', () => {
 
   beforeAll(() => {
     facebookAuth = mock();
-    facebookAuth.perform.mockResolvedValue(new AccessToken('any_value'));
+    facebookAuth.perform.mockResolvedValue({ accessToken: 'any_value' });
     token = 'any_token';
   });
 
@@ -37,7 +36,8 @@ describe('FacebookLoginController', () => {
   });
 
   it('should return 401 if authentication fails', async () => {
-    facebookAuth.perform.mockResolvedValueOnce(new AuthenticationError());
+    facebookAuth.perform.mockRejectedValueOnce(new AuthenticationError());
+
     const httpResponse = await sut.handle({ token });
 
     expect(httpResponse).toEqual({

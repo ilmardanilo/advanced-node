@@ -1,6 +1,3 @@
-import { AuthenticationError } from '../entities/errors';
-import { AccessToken } from '../entities';
-
 export interface FacebookAuthentication {
   perform: (
     params: FacebookAuthentication.Params,
@@ -12,5 +9,5 @@ export namespace FacebookAuthentication {
     token: string;
   };
 
-  export type Result = AccessToken | AuthenticationError;
+  export type Result = { accessToken: string };
 }

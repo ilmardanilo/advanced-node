@@ -1,5 +1,5 @@
-import { AuthenticationError } from '../errors';
-import { AccessToken } from '../models';
+import { AuthenticationError } from '../entities/errors';
+import { AccessToken } from '../entities';
 
 export interface FacebookAuthentication {
   perform: (

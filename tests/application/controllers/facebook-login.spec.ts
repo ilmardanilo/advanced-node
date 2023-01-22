@@ -1,7 +1,7 @@
 import { FacebookLoginController } from '../../../src/application/controllers';
 import { FacebookAuthentication } from '../../../src/domain/features';
-import { AccessToken } from '../../../src/domain/models';
-import { AuthenticationError } from '../../../src/domain/errors';
+import { AccessToken } from '../../../src/domain/entities';
+import { AuthenticationError } from '../../../src/domain/entities/errors';
 import { UnauthorizedError } from '../../../src/application/errors';
 import { RequiredStringValidator } from '../../../src/application/validation';
 import { mock, MockProxy } from 'jest-mock-extended';

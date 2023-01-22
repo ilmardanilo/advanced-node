@@ -1,6 +1,6 @@
-import { AuthenticationError } from '../../domain/errors';
+import { AuthenticationError } from '../entities/errors';
 import { FacebookAuthentication } from '../../domain/features';
-import { AccessToken, FacebookAccount } from '../../domain/models';
+import { AccessToken, FacebookAccount } from '../entities';
 import { LoadFacebookUserApi } from '../contracts/api';
 import { TokenGenerator } from '../contracts/crypto';
 import {

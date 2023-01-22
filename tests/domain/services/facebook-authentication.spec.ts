@@ -1,16 +1,16 @@
 import { FacebookAuthenticationService } from '../../../src/domain/services';
-import { AuthenticationError } from '../../../src/domain/errors';
+import { AuthenticationError } from '../../../src/domain/entities/errors';
 import { LoadFacebookUserApi } from '../../../src/domain/contracts/api';
 import { TokenGenerator } from '../../../src/domain/contracts/crypto';
 import {
   LoadUserAccountRepository,
   SaveFacebookAccountRepository,
 } from '../../../src/domain/contracts/repository';
-import { AccessToken, FacebookAccount } from '../../../src/domain/models';
+import { AccessToken, FacebookAccount } from '../../../src/domain/entities';
 import { mocked } from 'ts-jest/utils';
 import { mock, MockProxy } from 'jest-mock-extended';
 
-jest.mock('../../../src/domain/models/facebook-account');
+jest.mock('../../../src/domain/entities/facebook-account');
 
 describe('FacebookAuthenticationService', () => {
   let facebookApi: MockProxy<LoadFacebookUserApi>;

@@ -1,6 +1,6 @@
 import { FacebookAuthenticationService } from '../../../domain/services';
 import { makeFacebookApi } from '../apis';
-import { makeJwtTokenGenerator } from '../crypto';
+import { makeJwtTokenHandler } from '../crypto';
 import { makePgUserAccountRepository } from '../repositories';
 
 export const makeFacebookAuthenticationService =
@@ -8,6 +8,6 @@ export const makeFacebookAuthenticationService =
     return new FacebookAuthenticationService(
       makeFacebookApi(),
       makePgUserAccountRepository(),
-      makeJwtTokenGenerator(),
+      makeJwtTokenHandler(),
     );
   };

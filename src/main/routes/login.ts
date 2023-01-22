@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { adaptExpressRoute } from '../../infra/http';
+import { adaptExpressRoute } from '../adapters';
 import { makeFacebookLoginController } from '../factories/controllers';
 
 export const loginRouter = Router();

@@ -19,7 +19,11 @@ export class AuthenticationMiddleware {
 
     if (error) return forbiddenError();
 
-    await this.authorize.perform({ token: authorization });
+    try {
+      await this.authorize.perform({ token: authorization });
+    } catch (error) {
+      return forbiddenError();
+    }
   }
 }
 
@@ -69,5 +73,16 @@ describe('AuthenticationMiddleware', () => {
 
     expect(authorize.perform).toHaveBeenCalledWith({ token: authorization });
     expect(authorize.perform).toHaveBeenCalledTimes(1);
+  });
+
+  it('should return 403 if authorize throws', async () => {
+    authorize.perform.mockRejectedValueOnce(new Error('any_error'));
+
+    const httpResponse = await sut.handle({ authorization });
+
+    expect(httpResponse).toEqual({
+      statusCode: 403,
+      data: new ForbiddenError(),
+    });
   });
 });

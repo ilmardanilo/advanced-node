@@ -1,44 +1,7 @@
-import {
-  forbiddenError,
-  HttpResponse,
-  ok,
-} from '../../../src/application/helpers';
+import { AuthenticationMiddleware } from '../../../src/application/middlewares';
 import { ForbiddenError } from '../../../src/application/errors';
-import { RequiredStringValidator } from '../../../src/application/validation';
 import { Authorize } from '../../../src/domain/features';
 import { mock, MockProxy } from 'jest-mock-extended';
-
-type HttpRequest = { authorization: string };
-
-type Model =
-  | Error
-  | {
-      userId: string;
-    };
-
-export class AuthenticationMiddleware {
-  constructor(private readonly authorize: Authorize) {}
-
-  async handle({ authorization }: HttpRequest): Promise<HttpResponse<Model>> {
-    if (!this.validate({ authorization })) return forbiddenError();
-
-    try {
-      const userId = await this.authorize.perform({ token: authorization });
-      return ok({ userId });
-    } catch (error) {
-      return forbiddenError();
-    }
-  }
-
-  private validate({ authorization }: HttpRequest): boolean {
-    const error = new RequiredStringValidator(
-      authorization,
-      'authorization',
-    ).validate();
-
-    return error === undefined;
-  }
-}
 
 describe('AuthenticationMiddleware', () => {
   let sut: AuthenticationMiddleware;

@@ -20,12 +20,7 @@ export class AuthenticationMiddleware {
   constructor(private readonly authorize: Authorize) {}
 
   async handle({ authorization }: HttpRequest): Promise<HttpResponse<Model>> {
-    const error = new RequiredStringValidator(
-      authorization,
-      'authorization',
-    ).validate();
-
-    if (error) return forbiddenError();
+    if (!this.validate({ authorization })) return forbiddenError();
 
     try {
       const userId = await this.authorize.perform({ token: authorization });
@@ -33,6 +28,15 @@ export class AuthenticationMiddleware {
     } catch (error) {
       return forbiddenError();
     }
+  }
+
+  private validate({ authorization }: HttpRequest): boolean {
+    const error = new RequiredStringValidator(
+      authorization,
+      'authorization',
+    ).validate();
+
+    return error === undefined;
   }
 }
 

@@ -1,21 +1,21 @@
 import { AuthenticationMiddleware } from '../../../src/application/middlewares';
 import { ForbiddenError } from '../../../src/application/errors';
-import { Authorize } from '../../../src/domain/features';
+import { JwtTokenHandler } from '../../../src/infra/crypto';
 import { mock, MockProxy } from 'jest-mock-extended';
 
 describe('AuthenticationMiddleware', () => {
   let sut: AuthenticationMiddleware;
-  let authorize: MockProxy<Authorize>;
+  let authorize: MockProxy<JwtTokenHandler>;
   let authorization: string;
 
   beforeAll(() => {
     authorization = 'any_authorization_token';
     authorize = mock();
-    authorize.perform.mockResolvedValue('any_user_id');
+    authorize.validateToken.mockResolvedValue('any_user_id');
   });
 
   beforeEach(() => {
-    sut = new AuthenticationMiddleware(authorize);
+    sut = new AuthenticationMiddleware(authorize.validateToken);
   });
 
   it('should return 403 if authorization is empty', async () => {
@@ -48,12 +48,14 @@ describe('AuthenticationMiddleware', () => {
   it('should call authorize with correct params', async () => {
     await sut.handle({ authorization });
 
-    expect(authorize.perform).toHaveBeenCalledWith({ token: authorization });
-    expect(authorize.perform).toHaveBeenCalledTimes(1);
+    expect(authorize.validateToken).toHaveBeenCalledWith({
+      token: authorization,
+    });
+    expect(authorize.validateToken).toHaveBeenCalledTimes(1);
   });
 
   it('should return 403 if authorize throws', async () => {
-    authorize.perform.mockRejectedValueOnce(new Error('any_error'));
+    authorize.validateToken.mockRejectedValueOnce(new Error('any_error'));
 
     const httpResponse = await sut.handle({ authorization });
 

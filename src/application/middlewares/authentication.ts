@@ -1,6 +1,6 @@
 import { forbiddenError, HttpResponse, ok } from '../helpers';
 import { RequiredStringValidator } from '../validation';
-import { Authorize } from '../../domain/features';
+// import { Authorize } from '../../domain/features';
 import { Middleware } from './middleware';
 
 type HttpRequest = { authorization: string };
@@ -11,6 +11,8 @@ type Model =
       userId: string;
     };
 
+type Authorize = (params: { token: string }) => Promise<string>;
+
 export class AuthenticationMiddleware implements Middleware {
   constructor(private readonly authorize: Authorize) {}
 
@@ -18,7 +20,7 @@ export class AuthenticationMiddleware implements Middleware {
     if (!this.validate({ authorization })) return forbiddenError();
 
     try {
-      const userId = await this.authorize.perform({ token: authorization });
+      const userId = await this.authorize({ token: authorization });
       return ok({ userId });
     } catch (error) {
       return forbiddenError();

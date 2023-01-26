@@ -1,4 +1,4 @@
-import { mock } from 'jest-mock-extended';
+import { mock, MockProxy } from 'jest-mock-extended';
 
 type Params = { id: string; file: Buffer };
 
@@ -32,14 +32,25 @@ export namespace UUIDGenerator {
 }
 
 describe('ChangeProfilePictureService', () => {
-  it('should call UploadFile with correct params', async () => {
-    const uuid = 'any_unique_id';
-    const file = Buffer.from('any_buffer');
-    const fileStorage = mock<UploadFile>();
-    const crypto = mock<UUIDGenerator>();
-    crypto.uuid.mockReturnValue(uuid);
-    const sut = new ChangeProfilePictureService(fileStorage, crypto);
+  let uuid: string;
+  let file: Buffer;
+  let fileStorage: MockProxy<UploadFile>;
+  let crypto: MockProxy<UUIDGenerator>;
+  let sut: ChangeProfilePictureService;
 
+  beforeAll(() => {
+    uuid = 'any_unique_id';
+    file = Buffer.from('any_buffer');
+    fileStorage = mock();
+    crypto = mock();
+    crypto.uuid.mockReturnValue(uuid);
+  });
+
+  beforeEach(() => {
+    sut = new ChangeProfilePictureService(fileStorage, crypto);
+  });
+
+  it('should call UploadFile with correct params', async () => {
     await sut.perform({ id: 'any_id', file });
 
     expect(fileStorage.upload).toHaveBeenCalledWith({ file, key: uuid });

@@ -47,4 +47,13 @@ describe('ChangeProfilePictureService', () => {
     });
     expect(userProfileRepo.savePicture).toHaveBeenCalledTimes(1);
   });
+
+  it('should call SaveUserPictureRepository with correct params when file is undefined', async () => {
+    await sut.perform({ id: 'any_id', file: undefined });
+
+    expect(userProfileRepo.savePicture).toHaveBeenCalledWith({
+      pictureUrl: undefined,
+    });
+    expect(userProfileRepo.savePicture).toHaveBeenCalledTimes(1);
+  });
 });

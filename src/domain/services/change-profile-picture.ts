@@ -12,10 +12,11 @@ export class ChangeProfilePictureService {
   ) {}
 
   async perform({ id, file }: Params): Promise<void> {
+    let pictureUrl: string | undefined;
     if (file) {
       const uuid = this.crypto.uuid({ key: id });
-      const pictureUrl = await this.fileStorage.upload({ file, key: uuid });
-      await this.userProfileRepo.savePicture({ pictureUrl });
+      pictureUrl = await this.fileStorage.upload({ file, key: uuid });
     }
+    await this.userProfileRepo.savePicture({ pictureUrl });
   }
 }

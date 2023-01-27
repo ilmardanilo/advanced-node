@@ -39,11 +39,12 @@ describe('ChangeProfilePictureService', () => {
     expect(fileStorage.upload).not.toHaveBeenCalled();
   });
 
-  it('should not call SaveUserPictureRepository with correct params', async () => {
+  it('should call SaveUserPictureRepository with correct params', async () => {
     await sut.perform({ id: 'any_id', file });
 
     expect(userProfileRepo.savePicture).toHaveBeenCalledWith({
       pictureUrl: 'any_url',
+      initials: undefined,
     });
     expect(userProfileRepo.savePicture).toHaveBeenCalledTimes(1);
   });

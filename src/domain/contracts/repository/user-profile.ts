@@ -3,13 +3,16 @@ export interface SaveUserPictureRepository {
 }
 
 export namespace SaveUserPictureRepository {
-  export type Params = { pictureUrl?: string };
+  export type Params = { pictureUrl?: string; initials?: string };
 }
 
 export interface LoadUserProfileRepository {
-  load: (params: LoadUserProfileRepository.Params) => Promise<void>;
+  load: (
+    params: LoadUserProfileRepository.Params,
+  ) => Promise<LoadUserProfileRepository.Result>;
 }
 
 export namespace LoadUserProfileRepository {
   export type Params = { id: string };
+  export type Result = { name?: string };
 }

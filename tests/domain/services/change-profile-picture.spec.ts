@@ -25,6 +25,7 @@ describe('ChangeProfilePictureService', () => {
     crypto = mock();
     crypto.uuid.mockReturnValue(uuid);
     userProfileRepo = mock();
+    userProfileRepo.load.mockResolvedValue({ name: 'Alícia Barbosa Lima' });
   });
 
   beforeEach(() => {
@@ -59,6 +60,55 @@ describe('ChangeProfilePictureService', () => {
 
     expect(userProfileRepo.savePicture).toHaveBeenCalledWith({
       pictureUrl: undefined,
+      initials: 'AL',
+    });
+    expect(userProfileRepo.savePicture).toHaveBeenCalledTimes(1);
+  });
+
+  it('should call SaveUserPictureRepository with correct params when file is undefined', async () => {
+    userProfileRepo.load.mockResolvedValue({ name: 'alícia Barbosa lima' });
+
+    await sut.perform({ id: 'any_id', file: undefined });
+
+    expect(userProfileRepo.savePicture).toHaveBeenCalledWith({
+      pictureUrl: undefined,
+      initials: 'AL',
+    });
+    expect(userProfileRepo.savePicture).toHaveBeenCalledTimes(1);
+  });
+
+  it('should call SaveUserPictureRepository with correct params when file is undefined', async () => {
+    userProfileRepo.load.mockResolvedValue({ name: 'Ilmar' });
+
+    await sut.perform({ id: 'any_id', file: undefined });
+
+    expect(userProfileRepo.savePicture).toHaveBeenCalledWith({
+      pictureUrl: undefined,
+      initials: 'IL',
+    });
+    expect(userProfileRepo.savePicture).toHaveBeenCalledTimes(1);
+  });
+
+  it('should call SaveUserPictureRepository with correct params when file is undefined', async () => {
+    userProfileRepo.load.mockResolvedValue({ name: 'm' });
+
+    await sut.perform({ id: 'any_id', file: undefined });
+
+    expect(userProfileRepo.savePicture).toHaveBeenCalledWith({
+      pictureUrl: undefined,
+      initials: 'M',
+    });
+    expect(userProfileRepo.savePicture).toHaveBeenCalledTimes(1);
+  });
+
+  it('should call SaveUserPictureRepository with correct params when file is undefined', async () => {
+    userProfileRepo.load.mockResolvedValue({ name: undefined });
+
+    await sut.perform({ id: 'any_id', file: undefined });
+
+    expect(userProfileRepo.savePicture).toHaveBeenCalledWith({
+      pictureUrl: undefined,
+      initials: undefined,
     });
     expect(userProfileRepo.savePicture).toHaveBeenCalledTimes(1);
   });

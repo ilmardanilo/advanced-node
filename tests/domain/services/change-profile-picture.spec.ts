@@ -71,4 +71,10 @@ describe('ChangeProfilePictureService', () => {
     });
     expect(userProfileRepo.load).toHaveBeenCalledTimes(1);
   });
+
+  it('should not call LoadUserProfileRepository if file exists', async () => {
+    await sut.perform({ id: 'any_id', file });
+
+    expect(userProfileRepo.load).not.toHaveBeenCalled();
+  });
 });

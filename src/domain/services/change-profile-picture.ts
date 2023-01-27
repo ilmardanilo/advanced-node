@@ -20,8 +20,9 @@ export class ChangeProfilePictureService {
     if (file) {
       const uuid = this.crypto.uuid({ key: id });
       pictureUrl = await this.fileStorage.upload({ file, key: uuid });
+    } else {
+      await this.userProfileRepo.load({ id });
     }
     await this.userProfileRepo.savePicture({ pictureUrl });
-    await this.userProfileRepo.load({ id });
   }
 }

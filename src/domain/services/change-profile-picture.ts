@@ -1,6 +1,9 @@
 import { UUIDGenerator } from '../contracts/crypto';
 import { UploadFile } from '../contracts/gateways';
-import { SaveUserPictureRepository } from '../contracts/repository';
+import {
+  LoadUserProfileRepository,
+  SaveUserPictureRepository,
+} from '../contracts/repository';
 
 type Params = { id: string; file?: Buffer };
 
@@ -8,7 +11,8 @@ export class ChangeProfilePictureService {
   constructor(
     private readonly fileStorage: UploadFile,
     private readonly crypto: UUIDGenerator,
-    private readonly userProfileRepo: SaveUserPictureRepository,
+    private readonly userProfileRepo: SaveUserPictureRepository &
+      LoadUserProfileRepository,
   ) {}
 
   async perform({ id, file }: Params): Promise<void> {
@@ -18,5 +22,6 @@ export class ChangeProfilePictureService {
       pictureUrl = await this.fileStorage.upload({ file, key: uuid });
     }
     await this.userProfileRepo.savePicture({ pictureUrl });
+    await this.userProfileRepo.load({ id });
   }
 }

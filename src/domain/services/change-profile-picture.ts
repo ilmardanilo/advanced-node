@@ -7,6 +7,7 @@ import {
 import { UserProfile } from '../entities';
 
 type Params = { id: string; file?: Buffer };
+type Result = { pictureUrl?: string; initials?: string };
 
 export class ChangeProfilePictureService {
   constructor(
@@ -16,7 +17,7 @@ export class ChangeProfilePictureService {
       LoadUserProfileRepository,
   ) {}
 
-  async perform({ id, file }: Params): Promise<void> {
+  async perform({ id, file }: Params): Promise<Result> {
     const data: { pictureUrl?: string; name?: string } = {};
 
     if (file) {
@@ -30,5 +31,10 @@ export class ChangeProfilePictureService {
     userProfile.setPicture(data);
 
     await this.userProfileRepo.savePicture(userProfile);
+
+    return {
+      pictureUrl: userProfile.pictureUrl,
+      initials: userProfile.initials,
+    };
   }
 }

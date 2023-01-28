@@ -1,5 +1,5 @@
 import { config, S3 } from 'aws-sdk';
-import { UploadFile } from '../../domain/contracts/gateways';
+import { DeleteFile, UploadFile } from '../../domain/contracts/gateways';
 
 export class AwsS3FileStorage implements UploadFile {
   constructor(
@@ -27,5 +27,15 @@ export class AwsS3FileStorage implements UploadFile {
       .promise();
 
     return `https://${this.bucket}.s3.amazonaws.com/${encodeURIComponent(key)}`;
+  }
+
+  async delete({ key }: DeleteFile.Params): Promise<void> {
+    const s3 = new S3();
+    await s3
+      .deleteObject({
+        Bucket: this.bucket,
+        Key: key,
+      })
+      .promise();
   }
 }

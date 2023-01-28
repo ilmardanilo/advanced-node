@@ -27,7 +27,7 @@ describe('PgUserProfileRepository', () => {
   describe('savePicture', () => {
     it('should update user profile', async () => {
       const { id } = await pgUserRepo.save({
-        email: 'any_emal',
+        email: 'any_email',
         initials: 'any_initials',
       });
 
@@ -39,6 +39,19 @@ describe('PgUserProfileRepository', () => {
         pictureUrl: 'any_url',
         initials: null,
       });
+    });
+  });
+
+  describe('load', () => {
+    it('should load user profile', async () => {
+      const { id } = await pgUserRepo.save({
+        email: 'any_email',
+        name: 'any_name',
+      });
+
+      const userProfile = await sut.load({ id: id.toString() });
+
+      expect(userProfile?.name).toBe('any_name');
     });
   });
 });

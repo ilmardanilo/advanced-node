@@ -32,11 +32,9 @@ export class ChangeProfilePictureService {
 
     try {
       await this.userProfileRepo.savePicture(userProfile);
-    } catch {
-      if (file) {
-        await this.fileStorage.delete({ key });
-      }
-      throw new Error();
+    } catch (error) {
+      if (file) await this.fileStorage.delete({ key });
+      throw error;
     }
 
     return {

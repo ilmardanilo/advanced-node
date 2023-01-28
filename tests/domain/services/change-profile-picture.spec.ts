@@ -111,4 +111,13 @@ describe('ChangeProfilePictureService', () => {
       expect(fileStorage.delete).not.toHaveBeenCalled();
     });
   });
+
+  it('should rethrow if SaveUserPictureRepository throws', async () => {
+    const error = new Error('save_error');
+    userProfileRepo.savePicture.mockRejectedValueOnce(error);
+
+    const promise = sut.perform({ id: 'any_id', file });
+
+    await expect(promise).rejects.toThrow(error);
+  });
 });

@@ -1,6 +1,6 @@
 import { ChangeProfilePictureService } from '../../../src/domain/services';
 import { UUIDGenerator } from '../../../src/domain/contracts/crypto';
-import { UploadFile } from '../../../src/domain/contracts/gateways';
+import { UploadFile, DeleteFile } from '../../../src/domain/contracts/gateways';
 import {
   SaveUserPictureRepository,
   LoadUserProfileRepository,
@@ -14,7 +14,7 @@ jest.mock('../../../src/domain/entities/user-profile');
 describe('ChangeProfilePictureService', () => {
   let uuid: string;
   let file: Buffer;
-  let fileStorage: MockProxy<UploadFile>;
+  let fileStorage: MockProxy<UploadFile & DeleteFile>;
   let crypto: MockProxy<UUIDGenerator>;
   let userProfileRepo: MockProxy<
     SaveUserPictureRepository & LoadUserProfileRepository
@@ -86,6 +86,17 @@ describe('ChangeProfilePictureService', () => {
     expect(result).toEqual({
       pictureUrl: 'any_url',
       initials: 'any_initials',
+    });
+  });
+
+  it('should call DeleteFile when file exists and SaveUserPictureRepository throws', async () => {
+    userProfileRepo.savePicture.mockRejectedValueOnce(new Error());
+
+    const promise = sut.perform({ id: 'any_id', file });
+
+    promise.catch(() => {
+      expect(fileStorage.delete).toHaveBeenCalledWith({ key: uuid });
+      expect(fileStorage.delete).toHaveBeenCalledTimes(1);
     });
   });
 });

@@ -1,5 +1,5 @@
 import { UUIDGenerator } from '../contracts/crypto';
-import { UploadFile } from '../contracts/gateways';
+import { DeleteFile, UploadFile } from '../contracts/gateways';
 import {
   LoadUserProfileRepository,
   SaveUserPictureRepository,
@@ -11,18 +11,18 @@ type Result = { pictureUrl?: string; initials?: string };
 
 export class ChangeProfilePictureService {
   constructor(
-    private readonly fileStorage: UploadFile,
+    private readonly fileStorage: UploadFile & DeleteFile,
     private readonly crypto: UUIDGenerator,
     private readonly userProfileRepo: SaveUserPictureRepository &
       LoadUserProfileRepository,
   ) {}
 
   async perform({ id, file }: Params): Promise<Result> {
+    const key = this.crypto.uuid({ key: id });
     const data: { pictureUrl?: string; name?: string } = {};
 
     if (file) {
-      const uuid = this.crypto.uuid({ key: id });
-      data.pictureUrl = await this.fileStorage.upload({ file, key: uuid });
+      data.pictureUrl = await this.fileStorage.upload({ file, key });
     } else {
       data.name = (await this.userProfileRepo.load({ id })).name;
     }
@@ -30,7 +30,11 @@ export class ChangeProfilePictureService {
     const userProfile = new UserProfile(id);
     userProfile.setPicture(data);
 
-    await this.userProfileRepo.savePicture(userProfile);
+    try {
+      await this.userProfileRepo.savePicture(userProfile);
+    } catch {
+      await this.fileStorage.delete({ key });
+    }
 
     return {
       pictureUrl: userProfile.pictureUrl,

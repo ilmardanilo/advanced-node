@@ -23,7 +23,7 @@ export class ChangeProfilePictureService {
     if (file) {
       data.pictureUrl = await this.fileStorage.upload({ file, key });
     } else {
-      data.name = (await this.userProfileRepo.load({ id })).name;
+      data.name = (await this.userProfileRepo.load({ id }))?.name;
     }
 
     const userProfile = new UserProfile(id);

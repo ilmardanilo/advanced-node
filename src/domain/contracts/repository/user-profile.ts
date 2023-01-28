@@ -14,5 +14,5 @@ export interface LoadUserProfileRepository {
 
 export namespace LoadUserProfileRepository {
   export type Params = { id: string };
-  export type Result = { name?: string };
+  export type Result = { name?: string } | undefined;
 }

@@ -4,6 +4,7 @@ import {
   LoadUserProfileRepository,
   SaveUserPictureRepository,
 } from '../contracts/repository';
+import { UserProfile } from '../entities';
 
 type Params = { id: string; file?: Buffer };
 
@@ -16,22 +17,18 @@ export class ChangeProfilePictureService {
   ) {}
 
   async perform({ id, file }: Params): Promise<void> {
-    let pictureUrl: string | undefined;
-    let initials: string | undefined;
+    const data: { pictureUrl?: string; name?: string } = {};
+
     if (file) {
       const uuid = this.crypto.uuid({ key: id });
-      pictureUrl = await this.fileStorage.upload({ file, key: uuid });
+      data.pictureUrl = await this.fileStorage.upload({ file, key: uuid });
     } else {
-      const { name } = await this.userProfileRepo.load({ id });
-      if (name) {
-        const firstLetters = name.match(/\b(.)/g) ?? [];
-        if (firstLetters.length > 1) {
-          initials = `${firstLetters.shift()?.toUpperCase() ?? ''}${firstLetters.pop()?.toUpperCase() ?? ''}`;
-        } else {
-          initials = name.substring(0, 2)?.toUpperCase();
-        }
-      }
+      data.name = (await this.userProfileRepo.load({ id })).name;
     }
-    await this.userProfileRepo.savePicture({ pictureUrl, initials });
+
+    const userProfile = new UserProfile(id);
+    userProfile.setPicture(data);
+
+    await this.userProfileRepo.savePicture(userProfile);
   }
 }

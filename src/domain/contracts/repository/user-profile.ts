@@ -3,7 +3,7 @@ export interface SaveUserPictureRepository {
 }
 
 export namespace SaveUserPictureRepository {
-  export type Params = { pictureUrl?: string; initials?: string };
+  export type Params = { id: string; pictureUrl?: string; initials?: string };
 }
 
 export interface LoadUserProfileRepository {

@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { adaptExpressRoute } from '../adapters';
-import { makeFacebookLoginController } from '../factories/controllers';
+import { makeFacebookLoginController } from '../factories/application/controllers';
 
 export const loginRouter = Router();
 

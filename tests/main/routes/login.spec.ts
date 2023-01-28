@@ -1,6 +1,6 @@
 import { PgUser } from '../../../src/infra/postgres/entities';
 import { makeFakeDb } from '../../infra/postgres/mocks';
-import { FacebookApi } from '../../../src/infra/apis';
+import { FacebookApi } from '../../../src/infra/gateways';
 import { UnauthorizedError } from '../../../src/application/errors';
 
 import { IBackup } from 'pg-mem';
@@ -8,7 +8,7 @@ import { getConnection } from 'typeorm';
 import { mocked } from 'ts-jest/utils';
 import request from 'supertest';
 
-jest.mock('../../../src/infra/apis/facebook');
+jest.mock('../../../src/infra/gateways/facebook-api');
 
 describe('Login Routes', () => {
   describe('POST /login/facebook', () => {

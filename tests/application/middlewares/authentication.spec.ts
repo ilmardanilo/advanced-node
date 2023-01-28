@@ -1,6 +1,6 @@
 import { AuthenticationMiddleware } from '../../../src/application/middlewares';
 import { ForbiddenError } from '../../../src/application/errors';
-import { JwtTokenHandler } from '../../../src/infra/crypto';
+import { JwtTokenHandler } from '../../../src/infra/gateways';
 import { mock, MockProxy } from 'jest-mock-extended';
 
 describe('AuthenticationMiddleware', () => {

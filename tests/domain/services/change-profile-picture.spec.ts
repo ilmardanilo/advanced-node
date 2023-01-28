@@ -1,6 +1,9 @@
 import { ChangeProfilePictureService } from '../../../src/domain/services';
-import { UUIDGenerator } from '../../../src/domain/contracts/crypto';
-import { UploadFile, DeleteFile } from '../../../src/domain/contracts/gateways';
+import {
+  UploadFile,
+  DeleteFile,
+  UUIDGenerator,
+} from '../../../src/domain/contracts/gateways';
 import {
   SaveUserPictureRepository,
   LoadUserProfileRepository,

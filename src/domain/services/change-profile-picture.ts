@@ -1,5 +1,4 @@
-import { UUIDGenerator } from '../contracts/crypto';
-import { DeleteFile, UploadFile } from '../contracts/gateways';
+import { DeleteFile, UploadFile, UUIDGenerator } from '../contracts/gateways';
 import {
   LoadUserProfileRepository,
   SaveUserPictureRepository,

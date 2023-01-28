@@ -1,7 +1,7 @@
 import { config, S3 } from 'aws-sdk';
 import { DeleteFile, UploadFile } from '../../domain/contracts/gateways';
 
-export class AwsS3FileStorage implements UploadFile {
+export class AwsS3FileStorage implements UploadFile, DeleteFile {
   constructor(
     accessKey: string,
     secret: string,

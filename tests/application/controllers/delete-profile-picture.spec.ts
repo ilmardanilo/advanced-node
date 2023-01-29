@@ -1,13 +1,16 @@
+import { Controller } from '../../../src/application/controllers';
 import { HttpResponse, noContent } from '../../../src/application/helpers';
 import { ChangeProfilePicture } from '../../../src/domain/features';
 import { mock, MockProxy } from 'jest-mock-extended';
 
 type HttpRequest = { userId: string };
 
-export class DeletePictureController {
-  constructor(private readonly changeProfilePicture: ChangeProfilePicture) {}
+export class DeletePictureController extends Controller {
+  constructor(private readonly changeProfilePicture: ChangeProfilePicture) {
+    super();
+  }
 
-  async handle({ userId }: HttpRequest): Promise<HttpResponse> {
+  async perform({ userId }: HttpRequest): Promise<HttpResponse> {
     await this.changeProfilePicture.perform({ id: userId });
 
     return noContent();
@@ -24,6 +27,10 @@ describe('DeletePictureController', () => {
 
   beforeEach(() => {
     sut = new DeletePictureController(ChangeProfilePicture);
+  });
+
+  it('should extend Controller', async () => {
+    expect(sut).toBeInstanceOf(Controller);
   });
 
   it('should call ChangeProfilePicture with correct params', async () => {

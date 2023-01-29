@@ -1,4 +1,7 @@
-import { SavePictureController } from '../../../src/application/controllers';
+import {
+  Controller,
+  SavePictureController,
+} from '../../../src/application/controllers';
 import { ChangeProfilePicture } from '../../../src/domain/features';
 import {
   InvalidMimeTypeError,
@@ -29,6 +32,10 @@ describe('SavePictureController', () => {
 
   beforeEach(() => {
     sut = new SavePictureController(changeProfilePicture);
+  });
+
+  it('should extend Controller', async () => {
+    expect(sut).toBeInstanceOf(Controller);
   });
 
   it('should return 400 if file is not provided', async () => {

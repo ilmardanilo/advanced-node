@@ -1,21 +1,18 @@
 import { ChangeProfilePicture } from '../../../src/domain/features';
 import { RequiredFieldError } from '../../../src/application/errors';
-import { badRequest, HttpResponse } from '../../../src/application/helpers';
+import { badRequest, HttpResponse, ok } from '../../../src/application/helpers';
 import { mock, MockProxy } from 'jest-mock-extended';
 
 type HttpRequest = {
   file: { buffer: Buffer; mimeType: string };
   userId: string;
 };
-type Model = Error;
+type Model = Error | { initials?: string; pictureUrl?: string };
 
 export class SavePictureController {
   constructor(private readonly changeProfilePicture: ChangeProfilePicture) {}
 
-  async handle({
-    file,
-    userId,
-  }: HttpRequest): Promise<HttpResponse<Model> | undefined> {
+  async handle({ file, userId }: HttpRequest): Promise<HttpResponse<Model>> {
     if (!file) return badRequest(new RequiredFieldError('file'));
 
     if (file.buffer.length === 0)
@@ -28,7 +25,12 @@ export class SavePictureController {
     if (file.buffer.length > 5 * 1024 * 1024)
       return badRequest(new MaxFileSizeError(5));
 
-    await this.changeProfilePicture.perform({ file: file.buffer, id: userId });
+    const result = await this.changeProfilePicture.perform({
+      file: file.buffer,
+      id: userId,
+    });
+
+    return ok(result);
   }
 }
 
@@ -60,6 +62,10 @@ describe('SavePictureController', () => {
     file = { buffer, mimeType };
     userId = 'any_user_id';
     changeProfilePicture = mock();
+    changeProfilePicture.perform.mockResolvedValue({
+      initials: 'any_initials',
+      pictureUrl: 'any_url',
+    });
   });
 
   beforeEach(() => {
@@ -165,5 +171,14 @@ describe('SavePictureController', () => {
       file: buffer,
     });
     expect(changeProfilePicture.perform).toHaveBeenCalledTimes(1);
+  });
+
+  it('should return 200 with valid data', async () => {
+    const httpResponse = await sut.handle({ file, userId });
+
+    expect(httpResponse).toEqual({
+      statusCode: 200,
+      data: { initials: 'any_initials', pictureUrl: 'any_url' },
+    });
   });
 });

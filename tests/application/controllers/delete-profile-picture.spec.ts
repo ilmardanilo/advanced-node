@@ -1,5 +1,5 @@
 import { ChangeProfilePicture } from '../../../src/domain/features';
-import { mock } from 'jest-mock-extended';
+import { mock, MockProxy } from 'jest-mock-extended';
 
 type HttpRequest = { userId: string };
 
@@ -12,10 +12,18 @@ export class DeletePictureController {
 }
 
 describe('DeletePictureController', () => {
-  it('should call ChangeProfilePicture with correct params', async () => {
-    const ChangeProfilePicture = mock<ChangeProfilePicture>();
-    const sut = new DeletePictureController(ChangeProfilePicture);
+  let ChangeProfilePicture: MockProxy<ChangeProfilePicture>;
+  let sut: DeletePictureController;
 
+  beforeAll(() => {
+    ChangeProfilePicture = mock();
+  });
+
+  beforeEach(() => {
+    sut = new DeletePictureController(ChangeProfilePicture);
+  });
+
+  it('should call ChangeProfilePicture with correct params', async () => {
     await sut.handle({ userId: 'any_user_id' });
 
     expect(ChangeProfilePicture.perform).toHaveBeenCalledWith({

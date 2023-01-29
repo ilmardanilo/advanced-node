@@ -4,11 +4,9 @@ import {
   SaveUserPictureRepository,
 } from '../contracts/repository';
 import { UserProfile } from '../entities';
+import { ChangeProfilePicture } from '../features';
 
-type Params = { id: string; file?: Buffer };
-type Result = { pictureUrl?: string; initials?: string };
-
-export class ChangeProfilePictureService {
+export class ChangeProfilePictureService implements ChangeProfilePicture {
   constructor(
     private readonly fileStorage: UploadFile & DeleteFile,
     private readonly crypto: UUIDGenerator,
@@ -16,7 +14,10 @@ export class ChangeProfilePictureService {
       LoadUserProfileRepository,
   ) {}
 
-  async perform({ id, file }: Params): Promise<Result> {
+  async perform({
+    id,
+    file,
+  }: ChangeProfilePicture.Params): Promise<ChangeProfilePicture.Result> {
     const key = this.crypto.uuid({ key: id });
     const data: { pictureUrl?: string; name?: string } = {};
 

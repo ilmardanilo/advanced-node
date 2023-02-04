@@ -4,10 +4,10 @@ import { Controller } from './controller';
 import { ValidationBuilder, Validator } from '../validation';
 
 type HttpRequest = {
-  file: { buffer: Buffer; mimeType: string };
+  file?: { buffer: Buffer; mimeType: string };
   userId: string;
 };
-type Model = Error | { initials?: string; pictureUrl?: string };
+type Model = { initials?: string; pictureUrl?: string };
 
 export class SavePictureController extends Controller {
   constructor(private readonly changeProfilePicture: ChangeProfilePicture) {
@@ -15,15 +15,16 @@ export class SavePictureController extends Controller {
   }
 
   async perform({ file, userId }: HttpRequest): Promise<HttpResponse<Model>> {
-    const result = await this.changeProfilePicture.perform({
+    const { initials, pictureUrl } = await this.changeProfilePicture.perform({
       file,
       id: userId,
     });
 
-    return ok(result);
+    return ok({ initials, pictureUrl });
   }
 
   buildValidators({ file }: HttpRequest): Validator[] {
+    if (file === undefined) return [];
     return [
       ...ValidationBuilder.of({ value: file, fieldName: 'file' })
         .required()

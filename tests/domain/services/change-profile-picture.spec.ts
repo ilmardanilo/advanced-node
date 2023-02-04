@@ -16,7 +16,9 @@ jest.mock('../../../src/domain/entities/user-profile');
 
 describe('ChangeProfilePictureService', () => {
   let uuid: string;
-  let file: Buffer;
+  let buffer: Buffer;
+  let mimeType: string;
+  let file: { buffer: Buffer; mimeType: string };
   let fileStorage: MockProxy<UploadFile & DeleteFile>;
   let crypto: MockProxy<UUIDGenerator>;
   let userProfileRepo: MockProxy<
@@ -26,7 +28,9 @@ describe('ChangeProfilePictureService', () => {
 
   beforeAll(() => {
     uuid = 'any_unique_id';
-    file = Buffer.from('any_buffer');
+    buffer = Buffer.from('any_buffer');
+    mimeType = 'image/png';
+    file = { buffer, mimeType };
     fileStorage = mock();
     fileStorage.upload.mockResolvedValue('any_url');
     crypto = mock();
@@ -42,7 +46,10 @@ describe('ChangeProfilePictureService', () => {
   it('should call UploadFile with correct params', async () => {
     await sut.perform({ id: 'any_id', file });
 
-    expect(fileStorage.upload).toHaveBeenCalledWith({ file, key: uuid });
+    expect(fileStorage.upload).toHaveBeenCalledWith({
+      file: buffer,
+      fileName: uuid,
+    });
     expect(fileStorage.upload).toHaveBeenCalledTimes(1);
   });
 
@@ -109,7 +116,7 @@ describe('ChangeProfilePictureService', () => {
     const promise = sut.perform({ id: 'any_id', file });
 
     promise.catch(() => {
-      expect(fileStorage.delete).toHaveBeenCalledWith({ key: uuid });
+      expect(fileStorage.delete).toHaveBeenCalledWith({ fileName: uuid });
       expect(fileStorage.delete).toHaveBeenCalledTimes(1);
     });
   });

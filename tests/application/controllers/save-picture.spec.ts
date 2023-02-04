@@ -54,7 +54,7 @@ describe('SavePictureController', () => {
 
     expect(changeProfilePicture.perform).toHaveBeenCalledWith({
       id: userId,
-      file: buffer,
+      file,
     });
     expect(changeProfilePicture.perform).toHaveBeenCalledTimes(1);
   });

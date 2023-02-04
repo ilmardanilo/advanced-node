@@ -22,7 +22,10 @@ export class ChangeProfilePictureService implements ChangeProfilePicture {
     const data: { pictureUrl?: string; name?: string } = {};
 
     if (file) {
-      data.pictureUrl = await this.fileStorage.upload({ file, key });
+      data.pictureUrl = await this.fileStorage.upload({
+        file: file.buffer,
+        fileName: key,
+      });
     } else {
       data.name = (await this.userProfileRepo.load({ id }))?.name;
     }
@@ -33,7 +36,7 @@ export class ChangeProfilePictureService implements ChangeProfilePicture {
     try {
       await this.userProfileRepo.savePicture(userProfile);
     } catch (error) {
-      if (file) await this.fileStorage.delete({ key });
+      if (file) await this.fileStorage.delete({ fileName: key });
       throw error;
     }
 

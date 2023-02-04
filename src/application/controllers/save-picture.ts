@@ -16,7 +16,7 @@ export class SavePictureController extends Controller {
 
   async perform({ file, userId }: HttpRequest): Promise<HttpResponse<Model>> {
     const result = await this.changeProfilePicture.perform({
-      file: file.buffer,
+      file,
       id: userId,
     });
 
@@ -27,7 +27,7 @@ export class SavePictureController extends Controller {
     return [
       ...ValidationBuilder.of({ value: file, fieldName: 'file' })
         .required()
-        .image({allowed: ['png', 'jpg'], maxSizeInMb: 5})
+        .image({ allowed: ['png', 'jpg'], maxSizeInMb: 5 })
         .build(),
     ];
   }

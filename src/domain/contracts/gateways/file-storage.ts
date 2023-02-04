@@ -3,7 +3,7 @@ export interface UploadFile {
 }
 
 export namespace UploadFile {
-  export type Params = { file: Buffer; key: string };
+  export type Params = { file: Buffer; fileName: string };
   export type Result = string;
 }
 
@@ -12,5 +12,5 @@ export interface DeleteFile {
 }
 
 export namespace DeleteFile {
-  export type Params = { key: string };
+  export type Params = { fileName: string };
 }

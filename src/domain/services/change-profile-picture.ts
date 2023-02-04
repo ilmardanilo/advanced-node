@@ -22,9 +22,10 @@ export class ChangeProfilePictureService implements ChangeProfilePicture {
     const data: { pictureUrl?: string; name?: string } = {};
 
     if (file) {
+      const mimeType = file.mimeType.split('/')[1];
       data.pictureUrl = await this.fileStorage.upload({
         file: file.buffer,
-        fileName: key,
+        fileName: `${key}.${mimeType}`,
       });
     } else {
       data.name = (await this.userProfileRepo.load({ id }))?.name;

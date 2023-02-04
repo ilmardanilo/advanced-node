@@ -44,11 +44,27 @@ describe('ChangeProfilePictureService', () => {
   });
 
   it('should call UploadFile with correct params', async () => {
-    await sut.perform({ id: 'any_id', file });
+    await sut.perform({
+      id: 'any_id',
+      file: { buffer, mimeType: 'image/png' },
+    });
 
     expect(fileStorage.upload).toHaveBeenCalledWith({
       file: buffer,
-      fileName: uuid,
+      fileName: `${uuid}.png`,
+    });
+    expect(fileStorage.upload).toHaveBeenCalledTimes(1);
+  });
+
+  it('should call UploadFile with correct params', async () => {
+    await sut.perform({
+      id: 'any_id',
+      file: { buffer, mimeType: 'image/jpeg' },
+    });
+
+    expect(fileStorage.upload).toHaveBeenCalledWith({
+      file: buffer,
+      fileName: `${uuid}.jpeg`,
     });
     expect(fileStorage.upload).toHaveBeenCalledTimes(1);
   });

@@ -5,8 +5,5 @@ import { Router } from 'express';
 
 export const userRouter = Router();
 
-userRouter.delete(
-  '/users/picture',
-  auth,
-  adaptExpressRoute(makeSavePictureController()),
-);
+userRouter.delete('/users/picture', auth, adaptExpressRoute(makeSavePictureController()));
+userRouter.put('/users/picture', auth);
